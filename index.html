@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Scène</title>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.139.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.139.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+  <script>
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    const light = new THREE.PointLight(0xFFFFFF, 1, 100);
+    light.position.set(5, 5, 5);
+    scene.add(light);
+
+
+    const ambientLight = new THREE.AmbientLight(0x404040);
+    scene.add(ambientLight);
+
+
+    const textureLoader = new THREE.TextureLoader();
+    const texture = textureLoader.load('https://threejs.org/examples/textures/grasslight-big.jpg');
+
+    const geometry1 = new THREE.BoxGeometry();
+    const material1 = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+    const cube = new THREE.Mesh(geometry1, material1);
+    cube.position.x = -2;
+    scene.add(cube);
+
+    const geometry2 = new THREE.SphereGeometry(0.75, 32, 32);
+    const material2 = new THREE.MeshStandardMaterial({ map: texture });
+    const sphere = new THREE.Mesh(geometry2, material2);
+    sphere.position.x = 2;
+    scene.add(sphere);
+
+    const geometry3 = new THREE.CylinderGeometry(0.5, 0.5, 2, 32);
+    const material3 = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+    const cylinder = new THREE.Mesh(geometry3, material3);
+    cylinder.position.y = -2;
+    scene.add(cylinder);
+
+
+    camera.position.z = 5;
+
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      light.position.x = Math.sin(Date.now() * 0.001) * 5;
+      light.position.z = Math.cos(Date.now() * 0.001) * 5;
+
+      controls.update();
+
+
+      renderer.render(scene, camera);
+    }
+
+
+    animate();
+
+
+    window.addEventListener('resize', () => {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+    });
+  </script>
+</body>
+</html>
